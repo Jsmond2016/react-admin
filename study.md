@@ -179,7 +179,7 @@ export default {
 - storageUtils.js 存在 localStorage 里面
 
  代码为：
- 
+
  ```jsx harmony
 const USER_KEY = 'user_key'
 export default {
@@ -200,7 +200,7 @@ export default {
         localStorage.removeItem(USER_KEY)
     }
 }
-```
+ ```
 - 更好的替代方案，使用 store
 ```bash
 yarn add store
@@ -260,7 +260,7 @@ render() {
 }
 ```
 
-## Admin 页面构建
+## Admin 页面构建和路由管理
 
 - 页面结构
 ![](./note-images/20191220152317.png)
@@ -378,7 +378,7 @@ Content 里面，最后一个 `Redirect` 的意思，是指当进入页面后，
 
 - menuConfig.js 菜单配置文件
 
-简单实现方式为，在 menuItem 里面套一个 `Link`，即可实现点击跳转到对应页面
+简单实现方式为，在 menuItem 里面套一个 `Link`，即可实现点击跳转到对应路由
 
 ```jsx harmony
 import React, {Component} from 'react'
@@ -444,7 +444,7 @@ export default class LeftNav extends Component {
 }
 ```
 
-上面，是 ** 简单版 ** 实现方式，真正项目上为了便于管理，都是对路由进行配置，使用 ** 配置方式 ** 来对路由进行配置
+上面，是 **简单版** 实现方式，真正项目上为了便于管理，都是对路由进行配置，使用 **配置方式** 来对路由进行配置
 
 接下来，我们定义路由配置文件 `config/menuConfig.jsx` 
 
@@ -608,10 +608,13 @@ getMenuList = () => {
   }
 ```
 
-## 刷新页面停留在当前路由
+## withRouter 的使用
+
+>  当前页面需要实现一个新需求：刷新页面停留在当前路由
 
 在前面 leftNav 组件中，如果要实现刷新页面后还是停留在当前路由中，可以使用 `this.props.history.location.pathname` ，
-但是，浏览器报错：** pathname of undefined **， 为什么？
+
+但是，浏览器报错：**pathname of undefined**， 为什么？
 
 因为当前组件不是 路由组件，
 
@@ -652,8 +655,6 @@ export default withRouter(LeftNav)
 
 - 同时，注意一个坑：刷新页面后 path 获取错误？
 
-
-
 因为 `defaultSelectedKeys` 这个属性，只会获取一次 path，当访问 `/user` 时，其匹配的先后顺序为 `/` 和 `/user`，因为 `defaultSelectedKeys` 作为默认值只会匹配一次，也就是前面的 `/` ，所以后面的 `/user`，无法获取到
 
 解决办法： `selectedkeys` ，换成这个
@@ -667,7 +668,7 @@ export default withRouter(LeftNav)
 </Menu>
 ```
 
-## 自动打开子列表
+## 菜单列表自动打开子列表
 
 - 需求：当刷新页面的时候，如果当前路径有子菜单，则自动打开当前 路径下的子菜单
 
@@ -680,3 +681,219 @@ export default withRouter(LeftNav)
       }
     </Menu>
 ```
+
+## 使用 jsonp 获取百度地图天气信息
+
+- 为什么要使用 jsonp？
+
+1. 为了解决 Ajax 跨域问题，其本质是一个 `script` ，而不是 ajax， 但是只能解决 get 请求
+
+2. 在浏览器端，使用 `script` 发送 get 请求，请求的是 **一段 js （函数执行语句 / 回调） 代码**， 原理为：
+
+```js
+浏览器端：
+    动态生成 <script> 来请求后台接口，src 就是接口的 url
+    定义好用于接收响应数据的函数(fn)，并将函数名通过请求参数提交给后台，如（callback=fn）
+
+服务器端：
+    接收到请求处理产生结果数据后，返回一个函数调用的 js 代码，并将结果数据作为参数传入函数使用
+
+浏览器端：
+    收到响应自动执行函数调用的 js 代码，也就是执行了提前定义好的回调函数，并得到了需要的结果数据
+
+```
+
+- 安装 [jsonp-github](https://github.com/webmodules/jsonp)
+
+```jsx harmony
+yarn add jsonp
+```
+
+- 注册百度地图开发者信息，获取权限秘钥
+
+注册地址：[百度地图开放平台](http://lbsyun.baidu.com/apiconsole/key)
+
+使用方式参考： [如何使用百度天气预报API接口](https://zhidao.baidu.com/question/139021120315029565.html)
+
+- 定义jsonp请求天气
+
+```jsx harmony
+// api/index.js
+export function reqWeather(city) {
+  const url =
+    `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p4
+9MVra6urFRGOT9s8UBWr2`
+  
+return new Promise((resolve, reject) => {
+    jsonp(url, {
+      param: 'callback'
+    }, (error, response) => {
+      if (!error && response.status == 'success') {
+        const {dayPictureUrl, weather} = response.results[0].weather_data[0]
+        resolve({dayPictureUrl, weather})
+      } else {
+        alert(' 获取天气信息失败')
+      }
+    })
+  })
+}
+```
+
+
+## PropTypes 的使用
+
+> [使用 PropTypes 进行类型检查](https://react.docschina.org/docs/typechecking-with-proptypes.html)
+
+- 引入：`prop-types`
+
+```jsx
+import PropTypes from 'prop-types'
+```
+
+- 具体使用：
+
+```jsx
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
+
+class A extends Component {
+    // 类型限制
+  static propTypes = {
+    categoryName: PropTypes.string.isRequired,
+    setForm: PropTypes.func.isRequired
+  }
+
+  render() {
+      
+      const {categoryName, setForm } = this.props;
+      return ()
+  }
+}
+```
+
+- 其他类型，参考 [react-prop-types](https://react.docschina.org/docs/typechecking-with-proptypes.html)
+
+```jsx
+  // 这些属性都是可选的。
+  optionalArray: PropTypes.array,
+  optionalBool: PropTypes.bool,
+  optionalFunc: PropTypes.func,
+  optionalNumber: PropTypes.number,
+  optionalObject: PropTypes.object,
+  optionalString: PropTypes.string,
+  optionalSymbol: PropTypes.symbol,
+```
+
+- 更多资料：
+  - [使用PropTypes进行类型检查](https://www.jianshu.com/p/2896acb5746b)
+
+## React-Router 完全匹配
+
+react-router 路由完全匹配，参考：[exact: bool](https://react-router.docschina.org/web/api/Route/exact-bool)
+
+```jsx
+ <Route path='/product' component={ProductHome} exact/> {/*路径完全匹配*/}
+```
+
+示例代码：
+
+```jsx
+import React, {Component} from 'react'
+import {Switch, Route, Redirect} from 'react-router-dom'
+
+import ProductHome from './home'
+import ProductAddUpdate from './add-update'
+import ProductDetail from './detail'
+
+import './product.less'
+
+/*
+商品路由
+ */
+export default class Product extends Component {
+  render() {
+    return (
+      <Switch>
+        <Route path='/product' component={ProductHome} exact/> {/*路径完全匹配*/}
+        <Route path='/product/addupdate' component={ProductAddUpdate}/>
+        <Route path='/product/detail' component={ProductDetail}/>
+        <Redirect to='/product'/>
+      </Switch>
+    )
+  }
+}
+```
+
+
+
+## 前台分页和后台分页
+
+### 前台分页
+
+- 请求获取数据：一次性获取所有数据，**翻页时不需要再发请求**。
+- 请求接口：不需要指定页码(pageNum) 和 每页数量(pageSize)
+- 响应数据： 所有数据的数组
+
+### 后台分页
+
+- 请求获取数据： 每次**只获取当前页数据，翻页时发请求**
+- 请求接口： 需要指定请求参数，页码(pageNum) 和 每页数量(pageSize)
+- 响应数据： 当前页数据的数组 +  **总记录数 (total)**  ，最关键的是 **总记录数 (total)** ，决定了分多少页，可以计算得出
+
+示例代码：
+
+api/index.js 文件
+
+```jsx
+// 后台分页-获取商品分页列表
+export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', {pageNum, pageSize})
+/*
+搜索商品分页列表 (根据商品名称/商品描述)
+searchType: 搜索的类型, productName/productDesc
+ */
+export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) => ajax(BASE + '/manage/product/search', {
+  pageNum,
+  pageSize,
+  [searchType]: searchName,
+})
+```
+
+product/home.jsx 文件 
+
+```jsx
+// 具体使用
+getProducts = async (pageNum) => {
+    this.pageNum = pageNum // 保存pageNum, 让其它方法可以看到
+    this.setState({loading: true}) // 显示loading
+
+    const {searchName, searchType} = this.state
+    // 如果搜索关键字有值, 说明我们要做搜索分页
+    let result
+    if (searchName) {
+      result = await reqSearchProducts({pageNum, pageSize: PAGE_SIZE, searchName, searchType})
+    } else { // 一般分页请求
+      result = await reqProducts(pageNum, PAGE_SIZE)
+    }
+
+    this.setState({loading: false}) // 隐藏loading
+    if (result.status === 0) {
+      // 取出分页数据, 更新状态, 显示分页列表
+      const {total, list} = result.data
+      this.setState({
+        total,
+        products: list
+      })
+    }
+  }
+```
+
+
+
+
+
+### 如何选择分页
+
+在进行技术选型，该选择 前台分页 还是 后台分页技术呢？决定因素为：
+
+- 数据量大小
+- 客户要求
