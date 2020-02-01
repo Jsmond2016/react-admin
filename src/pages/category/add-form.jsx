@@ -20,7 +20,7 @@ class AddForm extends Component {
     parentId: PropTypes.string.isRequired, // 父分类的ID
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.props.setForm(this.props.form)
   }
 
@@ -38,7 +38,7 @@ class AddForm extends Component {
               <Select>
                 <Option value='0'>一级分类</Option>
                 {
-                  categorys.map(c => <Option value={c._id}>{c.name}</Option>)
+                  categorys.map((c, index) => <Option value={c._id} key={index} >{c.name}</Option>)
                 }
               </Select>
             )

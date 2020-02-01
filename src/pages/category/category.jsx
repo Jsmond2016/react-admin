@@ -74,7 +74,6 @@ export default class Category extends Component {
         this.setState({
           categorys
         })
-        console.log('----', this.state.categorys.length)
       } else {
         // 更新二级分类状态
         this.setState({
@@ -95,13 +94,11 @@ export default class Category extends Component {
       parentId: category._id,
       parentName: category.name
     }, () => { // 在状态更新且重新render()后执行
-      console.log('parentId', this.state.parentId) // '0'
       // 获取二级分类列表显示
       this.getCategorys()
     })
 
     // setState()不能立即获取最新的状态: 因为setState()是异步更新状态的
-    // console.log('parentId', this.state.parentId) // '0'
   }
 
   /*
@@ -121,7 +118,8 @@ export default class Category extends Component {
    */
   handleCancel = () => {
     // 清除输入数据
-    this.form.resetFields()
+    this.addForm && this.addForm.resetFields()
+    this.updateForm && this.updateForm.resetFields()
     // 隐藏确认框
     this.setState({
       showStatus: 0
@@ -141,7 +139,7 @@ export default class Category extends Component {
   添加分类
    */
   addCategory = () => {
-    this.form.validateFields(async (err, values) => {
+    this.addForm.validateFields(async (err, values) => {
       if (!err) {
         // 隐藏确认框
         this.setState({
@@ -151,7 +149,7 @@ export default class Category extends Component {
         // 收集数据, 并提交添加分类的请求
         const {parentId, categoryName} = values
         // 清除输入数据
-        this.form.resetFields()
+        this.addForm.resetFields()
         const result = await reqAddCategory(categoryName, parentId)
         if(result.status===0) {
 
@@ -184,9 +182,8 @@ export default class Category extends Component {
   更新分类
    */
   updateCategory = () => {
-    console.log('updateCategory()')
     // 进行表单验证, 只有通过了才处理
-    this.form.validateFields(async (err, values) => {
+    this.updateForm.validateFields(async (err, values) => {
       if(!err) {
         // 1. 隐藏确定框
         this.setState({
@@ -197,7 +194,7 @@ export default class Category extends Component {
         const categoryId = this.category._id
         const {categoryName} = values
         // 清除输入数据
-        this.form.resetFields()
+        this.updateForm.resetFields()
 
         // 2. 发请求更新分类
         const result = await reqUpdateCategory({categoryId, categoryName})
@@ -216,7 +213,7 @@ export default class Category extends Component {
   /*
   为第一次render()准备数据
    */
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     this.initColumns()
   }
 
@@ -271,7 +268,7 @@ export default class Category extends Component {
           <AddForm
             categorys={categorys}
             parentId={parentId}
-            setForm={(form) => {this.form = form}}
+            setForm={(form) => {this.addForm = form}}
           />
         </Modal>
 
@@ -283,7 +280,7 @@ export default class Category extends Component {
         >
           <UpdateForm
             categoryName={category.name}
-            setForm={(form) => {this.form = form}}
+            setForm={(form) => {this.updateForm = form}}
           />
         </Modal>
       </Card>

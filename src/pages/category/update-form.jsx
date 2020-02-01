@@ -17,7 +17,7 @@ class UpdateForm extends Component {
     setForm: PropTypes.func.isRequired
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     // 将form对象通过setForm()传递父组件
     this.props.setForm(this.props.form)
   }
@@ -37,7 +37,7 @@ class UpdateForm extends Component {
                 {required: true, message: '分类名称必须输入'}
               ]
             })(
-              <Input placeholder='请输入分类名称'/>
+              <Input placeholder='请输入分类名称' />
             )
           }
         </Item>

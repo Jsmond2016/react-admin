@@ -885,6 +885,23 @@ getProducts = async (pageNum) => {
       })
     }
   }
+
+<Card title={title} extra={extra}>
+    <Table
+        bordered
+        rowKey='_id'
+        loading={loading}
+        dataSource={products}
+        columns={this.columns}
+        pagination={{
+            current: this.pageNum,
+            total,
+            defaultPageSize: PAGE_SIZE,
+            showQuickJumper: true,
+            onChange: this.getProducts // 分页操作的时候，调用 分页请求，默认传入分页参数 page
+        }}
+        />
+</Card>
 ```
 
 
@@ -897,3 +914,4 @@ getProducts = async (pageNum) => {
 
 - 数据量大小
 - 客户要求
+

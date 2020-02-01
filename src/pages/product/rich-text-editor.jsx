@@ -42,7 +42,6 @@ export default class RichTextEditor extends Component {
   输入过程中实时的回调
    */
   onEditorStateChange = (editorState) => {
-    console.log('onEditorStateChange()')
     this.setState({
       editorState,
     })

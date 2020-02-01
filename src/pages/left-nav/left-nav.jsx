@@ -26,7 +26,7 @@ class LeftNav extends Component {
       } else {
         const path = this.props.location.pathname
         // 判断 children item 中， item 路径是否等于当前路径
-        const cItemIndex = item.children.findIndex(childrenItem => childrenItem.key === path)
+        const cItemIndex = item.children.findIndex(childrenItem => path.indexOf(childrenItem.key) === 0)
         if(cItemIndex !== -1) {
           this.openKey = item.key
         }
@@ -54,7 +54,8 @@ class LeftNav extends Component {
   }
 
   render() {
-    const path = this.props.location.pathname
+    let path = this.props.location.pathname
+    path = path.indexOf('/product') === 0 ? '/product' : path
     const openKey = this.openKey
     return (
       <div className="left-nav">

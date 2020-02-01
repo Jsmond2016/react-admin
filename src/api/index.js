@@ -26,10 +26,26 @@ export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', {
 export const reqAddCategory = (categoryName, parentId) => ajax(BASE + 'manage/category/add', {categoryName, parentId}, 'POST')
 
 // 更新分类
-export const reqUpdateCategory = ({categoryName, parentId}) => ajax(BASE + 'manage/category/update', {categoryName, parentId},  'POST')
+export const reqUpdateCategory = ({categoryName, categoryId}) => ajax(BASE + 'manage/category/update', {categoryName, categoryId},  'POST')
 
 // 获取商品分页列表
 export const reqProducts = (pageNum, pageSize) => ajax(BASE + '/manage/product/list', {pageNum, pageSize})
+
+
+// 获取一个分类
+export const reqCategory = (categoryId) => ajax(BASE + '/manage/category/info', {categoryId})
+
+
+// 添加/修改商品
+export const reqAddOrUpdateProduct = (product) => ajax(BASE + '/manage/product/' + ( product._id?'update':'add'), product, 'POST')
+
+// 删除指定名称的图片
+export const reqDeleteImg = (name) => ajax(BASE + '/manage/img/delete', {name}, 'POST')
+
+
+// 更新商品的状态(上架/下架)
+export const reqUpdateStatus = (productId, status) => ajax(BASE + '/manage/product/updateStatus', {productId, status}, 'POST')
+
 
 /*
 搜索商品分页列表 (根据商品名称/商品描述)

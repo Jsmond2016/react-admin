@@ -91,7 +91,6 @@ class ProductAddUpdate extends PureComponent {
   验证价格的自定义验证函数
    */
   validatePrice = (rule, value, callback) => {
-    console.log(value, typeof value)
     if (value*1 > 0) {
       callback() // 验证通过
     } else {
@@ -175,7 +174,7 @@ class ProductAddUpdate extends PureComponent {
     this.getCategorys('0')
   }
 
-  componentWillMount () {
+  UNSAFE_componentWillMount () {
     // 取出携带的state
     const product = this.props.location.state  // 如果是添加没值, 否则有值
     // 保存是否是更新的标识
@@ -239,7 +238,7 @@ class ProductAddUpdate extends PureComponent {
                 rules: [
                   {required: true, message: '必须输入商品描述'}
                 ]
-              })(<TextArea placeholder="请输入商品描述" autosize={{ minRows: 2, maxRows: 6 }} />)
+              })(<TextArea placeholder="请输入商品描述" autoSize={{ minRows: 2, maxRows: 6 }} />)
             }
 
           </Item>
