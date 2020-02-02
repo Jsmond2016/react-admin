@@ -13,9 +13,9 @@ import User from '../user/user'
 import Bar from '../charts/bar'
 import Pie from '../charts/pie'
 import Line from '../charts/line'
-import Header from '../header/header'
+import Header from '../../components/header/header'
 import Product from '../product/product'
-import LeftNav from '../left-nav/left-nav'
+import LeftNav from '../../components/left-nav/left-nav'
 import Category from '../category/category'
 
 
