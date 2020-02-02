@@ -56,6 +56,28 @@ export const reqSearchProducts = ({pageNum, pageSize, searchName, searchType}) =
   pageSize,
   [searchType]: searchName,
 })
+
+// 获取所有角色的列表
+export const reqRoles = () => ajax(BASE + '/manage/role/list')
+// 添加角色
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName}, 'POST')
+// 添加角色
+export const reqUpdateRole = (role) => ajax(BASE + '/manage/role/update', role, 'POST')
+
+
+// 获取所有用户的列表
+export const reqUsers = () => ajax(BASE + '/manage/user/list')
+// 删除指定用户
+export const reqDeleteUser = (userId) => ajax(BASE + '/manage/user/delete', {userId}, 'POST')
+// 添加/更新用户
+export const reqAddOrUpdateUser = (user) => ajax(BASE + '/manage/user/'+(user._id ? 'update' : 'add'), user, 'POST')
+
+
+
+
+
+
+
 /*
 通过 jsonp 请求获取天气信息
 */
@@ -76,4 +98,6 @@ export function reqWeather(city) {
     })
   })
 }
+
+
 

@@ -43,7 +43,7 @@ class Header extends Component {
         Modal.confirm({
             content: ' 确定退出吗?',
             onOk: () => {
-                console.log('OK')
+                // console.log('OK')
                 // 移除保存的 user
                 storageUtils.removeUser()
                 memoryUtils.user = {}
@@ -51,7 +51,7 @@ class Header extends Component {
                 this.props.history.replace('/login')
             },
             onCancel() {
-                console.log('Cancel')
+                // console.log('Cancel')
             },
         })
     }
