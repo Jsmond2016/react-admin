@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 import {Link, withRouter} from 'react-router-dom'
 import {Menu, Icon} from 'antd'
+import { connect } from 'react-redux'
 
+import { setHeadTitle } from '../../redux/actions'
 import logo from '../../assets/images/logo.png'
 import menuList from "../../config/menuConfig"
 // 因为 menuConfig 是 export default，即默认导出的，可以任意取名字，否则不行
 import './index.less'
-import memoryUtils from "../../utils/memoryUtils";
+
 
 
 const { SubMenu } = Menu
@@ -20,8 +22,8 @@ class LeftNav extends Component {
   hasAuth = (item) => {
     const {key, isPublic} = item
 
-    const menus = memoryUtils.user.role.menus
-    const username = memoryUtils.user.username
+    const menus = this.props.user.role.menus
+    const username = this.props.user.username
     /*
     1. 如果当前用户是admin
     2. 如果当前item是公开的
@@ -37,12 +39,16 @@ class LeftNav extends Component {
   }
 
   getMenuList = (menuList) => {
+    const path = this.props.location.pathname
     return menuList.reduce((pre, item) => {
       if (this.hasAuth(item)) {
         if(!item.children) {
+          if (item.key === path || path.indexOf(item.key) === 0) {
+            this.props.setHeadTitle(item.title)// 刷新页面初次渲染的时候更新为对应目录的标题
+          }
           pre.push((
             <Menu.Item key={item.key}>
-              <Link to={item.key}>
+              <Link to={item.key} onClick={() => this.props.setHeadTitle(item.title)}>
                 <Icon type={item.icon}></Icon>
                 <span>{item.title}</span>
               </Link>
@@ -101,4 +107,7 @@ class LeftNav extends Component {
   }
 }
 
-export  default withRouter(LeftNav)
+export  default connect(
+  state => ({user: state.user}),
+  {setHeadTitle}
+)(withRouter(LeftNav))
