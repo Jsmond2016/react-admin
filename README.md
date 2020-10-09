@@ -9,7 +9,7 @@
 - Express
 - Mongoose
 
-学习笔记：在根目录的 [笔记](./笔记.md) 中
+学习笔记：在根目录的 [笔记](./笔记.md)， [study](./study.md) 中
 
 
 ## 项目启动
@@ -21,7 +21,7 @@
 yarn install
 
 # 先启动后台项目
-node ./admin_server_final/server.js
+node ./admin-server_final/server.js
 
 # 启动前端项目
 

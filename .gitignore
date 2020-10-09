@@ -10,7 +10,9 @@
 
 # production
 /build
+.idea
 
+./admin-server_final/.idea
 # misc
 .DS_Store
 .env.local
